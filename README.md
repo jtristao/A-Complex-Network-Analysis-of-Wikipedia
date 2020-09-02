@@ -27,15 +27,17 @@ Looking at the page's Html and the links structure, the articles page follows th
 
 Note: Disambiguation pages are considered an article page.
 
-We then used Scrapy to crawl Wikipedia's pages. [Scrapy](en.wikipedia.org) is a free and open-source web-crawling framework written in Python, offering a nice and easy to use architecture, allowing us to access the pages and retrieve information. Scrapy deals with requests, parsing, parallelism, processing, and saving web content through its pipeline and spiders.
+### Crawling
+
+We used Scrapy to crawl Wikipedia's pages. [Scrapy](en.wikipedia.org) is a free and open-source web-crawling framework written in Python, offering a nice and easy to use architecture, allowing us to access the pages and retrieve information. Scrapy deals with requests, parsing, parallelism, processing, and saving web content through its pipeline and spiders.
 
 The crawler searched the English pages in the ``en.wikipedia.org`` domain. Initially, it creates a folder called "Articles" where the fully processed pages will be stored. After that, it will make a starting request at Wikipedia's main page at the current day and then select all article links and follow them recursively. At every new page, the links are selected and followed until no more links are left to be seen.
 
 For every page, the links are selected from the Html source using the following regular expression ``` ^(?!\/wiki\/\S+:\S+|\/wiki\/\S+#\S+)(\/wiki\/\S+) ```. The links are placed in a list, which has the duplicate elements removed, the string cleansed and then placed in a JSON. The JSON is stored in a file whose name is the original page. The code can be found in [links.py](wikipedia_crawler/wikipedia/spiders/links.py).
 
-To respect wikipedia's integrity, we avoided to make too many requests. In the [configuration file](wikipedia_crawler/wikipedia/settings), the spiders are configured to follow the wikipedia [robot.txt rules](https://pt.wikipedia.org/robots.txt).In the case of interruption, the process store its current state in the [cache folder](wikipedia_crawler/wikpedia/Caches) and can be later continued.
+### Constraints
 
-### Disadvantages
+To respect wikipedia's integrity, we avoided to make too many requests, which slowed down the process. In the [configuration file](wikipedia_crawler/wikipedia/settings), the spiders are configured to follow the wikipedia [robot.txt rules](https://pt.wikipedia.org/robots.txt). In the case of interruption, the process store its current state in the [cache folder](wikipedia_crawler/wikpedia/Caches) and can be later continued.
 
 ### Usage
 
@@ -44,6 +46,11 @@ The [script](wikipedia_crawler/wikipedia/spiders/links.py) can be used through t
 * ` scrapy crawl wiki_spider `
 
 It will use about 20Gb of storage and can take a few hundred hours(about 100 hours, with an average of 1000 pages per minute). If necessary, the script can be interrupter using Ctrl+C and later continued. It's necessary to wait for the program to save its context before stopping as pressing Ctrl+C multiple times will kill the process abruptly and will be needed to restart from scratch.
+
+
+### Disadvantages
+
+Wikipedia it's not a graph with a unique giant component, which means that some clusters may be left out. Since we are following the links as they point to one another, only the components pointed by the [main page](https://en.wikipedia.org/wiki/Main_Page) will be seen. Accordingly to the [reference paper](https://doi.org/10.1103/PhysRevE.74.036116) this would represent about 96.35% of the articles in 2004.
 
 ## Post Processing
 

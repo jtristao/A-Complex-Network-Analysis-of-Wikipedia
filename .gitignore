@@ -1,6 +1,12 @@
 # Wikipedia's articles links
-*/*Articles/*
+**/Articles/
 
 # Reference papers
 Papers/*
+
+# Python's cache files
+__pycache__/
+
+# Scrapy spider's cache
+**/Cache/
 
