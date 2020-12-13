@@ -8,5 +8,6 @@ import scrapy
 
 class WikipediaItem(scrapy.Item):
     # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
+    page = scrapy.Field()
+    links = scrapy.Field()
+    size = scrapy.Field()
