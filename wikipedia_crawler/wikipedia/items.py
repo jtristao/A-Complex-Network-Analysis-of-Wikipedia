@@ -11,3 +11,4 @@ class WikipediaItem(scrapy.Item):
     page = scrapy.Field()
     links = scrapy.Field()
     size = scrapy.Field()
+    content = scrapy.Field()
