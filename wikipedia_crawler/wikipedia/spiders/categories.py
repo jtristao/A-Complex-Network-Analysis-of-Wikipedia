@@ -64,6 +64,9 @@ class WikipediaCategoriesSpider(Spider):
             yield Request(self.base_url.format(page=category), callback=self.parse_category)
 
     def parse_category(self, response):
+        page_data = self.collect_page(response)
+
+        # print(page_data, end="\n\n\n")
         # Build item:
         #   Collect the article content
         #   Collect the links on the category page
@@ -73,3 +76,25 @@ class WikipediaCategoriesSpider(Spider):
         # Recurse to other sub_categories
 
         pass
+
+    def collect_page(self, response):
+        item = WikipediaItem()
+
+        item["page"] = response.url.split("/")[-1]
+
+        item["links"] = response.xpath('//div[@id="mw-subcategories"]//@href').re("/wiki/(\w+:.+)")
+        item["links"] += response.xpath('//div[@id="mw-pages"]//@href').re("/wiki/(.+)")
+
+        item["size"] = response.xpath('//div[@id="mw-subcategories"]//p').re("out of[ ]+(\d+)")
+        item["size"] += response.xpath('//div[@id="mw-pages"]//p').re("out of[ ]+(\d+)")
+
+        main_article = response.xpath(
+            '//div[@id="mw-pages"]//div[@class="mw-category-group"][1]//@href'
+        ).re("/wiki/(.+)")
+
+        if len(main_article) == 0:
+            print("aaaaaaaaaaaaaaaaaaa", response.url)
+        for article in main_article:
+            print(response.url, article)
+
+        return item
