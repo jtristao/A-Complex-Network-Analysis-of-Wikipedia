@@ -12,4 +12,4 @@ class WikipediaItem(scrapy.Item):
     page = scrapy.Field()  # str: Page name
     links = scrapy.Field()  # list: list of links
     size = scrapy.Field()  # int: number of links
-    content = scrapy.Field()  # dict: Page content
+    article = scrapy.Field()  # dict: Page content
