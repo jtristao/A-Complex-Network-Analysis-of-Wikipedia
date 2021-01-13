@@ -165,8 +165,4 @@ class WikipediaCategoriesSpider(Spider):
         return sub_category_cnt + category_cnt
 
 
-# Comentar
-# Documentar
-# Testar
-
 # Problems with repeated requests
